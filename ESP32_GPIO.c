@@ -27,6 +27,16 @@
 
 #include "ESP32_GPIO.h"
 
+//INTERNAL VARIABLES
+static bool s_debug;
+
+void ESP32_GPIO_SetDebug(bool enable)
+{
+	//SET MODULE DEBUG
+
+	s_debug = enable;
+}
+
 esp_err_t ESP32_GPIO_SetDirection(uint8_t gpio_num, esp32_gpio_pin_direction_t direction)
 {
 	//SET GPIO PIN DIRECTION
@@ -50,7 +60,10 @@ esp_err_t ESP32_GPIO_SetDirection(uint8_t gpio_num, esp32_gpio_pin_direction_t d
 		return ESP_FAIL;
 	}
 
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Direction = %u", gpio_num, direction);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Direction = %u", gpio_num, direction);
+	}
 	return ESP_OK;
 }
 
@@ -77,7 +90,10 @@ esp_err_t ESP32_GPIO_SetValue(uint8_t gpio_num, uint8_t val)
 		return ESP_FAIL;
 	}
 	
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Set = %u", gpio_num, val);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Set = %u", gpio_num, val);
+	}
 	return ESP_OK;
 }
 
@@ -95,7 +111,38 @@ esp_err_t ESP32_GPIO_GetValue(uint8_t gpio_num, uint8_t* retval)
 	//GET PIN LEVEL VALUE
 	*retval = gpio_get_level(gpio_num);
 	
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Get = %u", gpio_num, *retval);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Get = %u", gpio_num, *retval);
+	}
+	return ESP_OK;
+}
+
+esp_err_t ESP32_GPIO_Toggle(uint8_t gpio_num)
+{
+	//TOGGLE SPECIFIED GPIO OUTPUT
+	//CHECK IF VALID GPIO
+	if(!GPIO_IS_VALID_GPIO(gpio_num))
+	{
+		return ESP_FAIL;
+	}
+
+	bool val;
+	esp_err_t err;
+	
+	val = gpio_get_level(gpio_num);
+	val = !val;
+	err = gpio_set_level(gpio_num, val);
+
+	if(err != ESP_OK)
+	{
+		return ESP_FAIL;
+	}
+
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Toggle. New val = %u", gpio_num, val);
+	}
 	return ESP_OK;
 }
 
@@ -123,7 +170,10 @@ esp_err_t ESP32_GPIO_SetPullUpDown(uint8_t gpio_num, esp32_gpio_pull_updown_type
 		return ESP_FAIL;
 	}
 
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Pullup / pulldown set (%u)", gpio_num, type);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Pullup / pulldown set (%u)", gpio_num, type);
+	}
 	return ESP_OK;
 }
 
@@ -151,7 +201,10 @@ esp_err_t ESP32_GPIO_RemovePullUpDown(uint8_t gpio_num)
 		return ESP_FAIL;
 	}
 
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Removed pullup / pulldown", gpio_num);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Removed pullup / pulldown", gpio_num);
+	}
 	return ESP_OK;
 }
 
@@ -185,7 +238,10 @@ esp_err_t ESP32_GPIO_SetInterrupt(uint8_t gpio_num, esp32_gpio_interrupt_type_t 
 		return err;
 	}
 	
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt type = %u Set", gpio_num, type);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt type = %u Set", gpio_num, type);
+	}
 	return ESP_OK;
 }
 
@@ -201,7 +257,10 @@ esp_err_t ESP32_GPIO_EnableInterrupt(uint8_t gpio_num)
 		return err;
 	}
 	
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Enabled", gpio_num);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Enabled", gpio_num);
+	}
 	return ESP_OK;
 }
 
@@ -220,6 +279,9 @@ esp_err_t ESP32_GPIO_DisableInterrupt(uint8_t gpio_num)
 		return err;
 	}
 	
-	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Disabled + handler Removed", gpio_num);
+	if(s_debug)
+	{
+		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Disabled + handler Removed", gpio_num);
+	}
 	return ESP_OK;
 }

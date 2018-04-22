@@ -39,7 +39,10 @@ typedef enum
 {
     GPIO_DIRECTION_DISABLE = 0,
     GPIO_DIRECTION_INPUT,
-    GPIO_DIRECTION_OUTPUT
+    GPIO_DIRECTION_OUTPUT,
+    GPIO_DIRECTION_OUTPUT_OPENDRAIN,
+    GPIO_DIRECTION_INPUT_OUTPUT_OPENDRAIN,
+    GPIO_DIRECTION_INPUT_OUTPUT
 }esp32_gpio_pin_direction_t;
 
 typedef enum
@@ -58,9 +61,12 @@ typedef enum
     GPIO_INT_LEVEL_HIGHT
 }esp32_gpio_interrupt_type_t;
 
+void ESP32_GPIO_SetDebug(bool enable);
+
 esp_err_t ESP32_GPIO_SetDirection(uint8_t gpio_num, esp32_gpio_pin_direction_t direction);
 esp_err_t ESP32_GPIO_SetValue(uint8_t gpio_num, uint8_t val);
 esp_err_t ESP32_GPIO_GetValue(uint8_t gpio_num, uint8_t* retval);
+esp_err_t ESP32_GPIO_Toggle(uint8_t gpio_num);
 
 esp_err_t ESP32_GPIO_SetPullUpDown(uint8_t gpio_num, esp32_gpio_pull_updown_type_t type);
 esp_err_t ESP32_GPIO_RemovePullUpDown(uint8_t gpio_num);
