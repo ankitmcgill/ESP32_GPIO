@@ -10,6 +10,13 @@
 //        GPIO 34-39 CAN ONLY BE SET IN INPUT MODE AND DO NOT
 //        PROVIDE SOFTWARE PULLUP / PULLDOWN  
 //
+//        FOR GPIO INTERRUPT, THIS LIBRARY USES ESP32 GPIO DRIVER
+//        IMPLEMENTED PER PIN ISR (AS OPPOSED TO CPU CORE GPIO ISR)
+//        THIS ALLOWS TO HAVE PER GPIO PIN ISR INSTEAD OF A GLOBAL
+//        ONE
+//        FOR DETAILS REFER TO : ESP-IDF DOCUMENT, GPIO SECTION
+//                               FUNCTION gpio_install_isr_service()
+//      
 //        THIS LIBRARY DOES NOT SUPPORT RTC GPIO
 //
 // APRIL 19, 2018
@@ -145,5 +152,74 @@ esp_err_t ESP32_GPIO_RemovePullUpDown(uint8_t gpio_num)
 	}
 
 	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Removed pullup / pulldown", gpio_num);
+	return ESP_OK;
+}
+
+esp_err_t ESP32_GPIO_StartInterruptService(void)
+{
+	//START GPIO DRIVER ISR SERVICE
+	//WITH LOW AND MEDIUM LEVEL INTERRUPTS
+
+	return gpio_install_isr_service(ESP_INTR_FLAG_LOWMED);
+}
+
+esp_err_t ESP32_GPIO_StopInterruptService(void)
+{
+	//STOP GPIO DRIVER ISR SERVICE
+
+	gpio_uninstall_isr_service();
+	return ESP_OK;
+}
+
+esp_err_t ESP32_GPIO_SetInterrupt(uint8_t gpio_num, esp32_gpio_interrupt_type_t type, gpio_isr_t handler)
+{
+	//SET GPIO PIN INTERRUPT AND HANDLER
+
+	esp_err_t err;
+
+	err = gpio_set_intr_type(gpio_num, type);
+	err = gpio_isr_handler_add(gpio_num, handler, NULL);
+
+	if(err != ESP_OK)
+	{
+		return err;
+	}
+	
+	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt type = %u Set", gpio_num, type);
+	return ESP_OK;
+}
+
+esp_err_t ESP32_GPIO_EnableInterrupt(uint8_t gpio_num)
+{
+	//ENABLE GPIO INTERRUPT
+
+	esp_err_t err;
+
+	err = gpio_intr_enable(gpio_num);
+	if(err != ESP_OK)
+	{
+		return err;
+	}
+	
+	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Enabled", gpio_num);
+	return ESP_OK;
+}
+
+esp_err_t ESP32_GPIO_DisableInterrupt(uint8_t gpio_num)
+{
+	//DISABLE INT ON SPECIFIED PIN & REMOVE
+	//HANDLER FROM GPIO DRIVER ISR SERVICE
+
+	esp_err_t err;
+
+	err = gpio_intr_disable(gpio_num);
+	err = gpio_isr_handler_remove(gpio_num);
+
+	if(err != ESP_OK)
+	{
+		return err;
+	}
+	
+	ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Disabled + handler Removed", gpio_num);
 	return ESP_OK;
 }

@@ -10,6 +10,13 @@
 //        GPIO 34-39 CAN ONLY BE SET IN INPUT MODE AND DO NOT
 //        PROVIDE SOFTWARE PULLUP / PULLDOWN  
 //
+//        FOR GPIO INTERRUPT, THIS LIBRARY USES ESP32 GPIO DRIVER
+//        IMPLEMENTED PER PIN ISR (AS OPPOSED TO CPU CORE GPIO ISR)
+//        THIS ALLOWS TO HAVE PER GPIO PIN ISR INSTEAD OF A GLOBAL
+//        ONE
+//        FOR DETAILS REFER TO : ESP-IDF DOCUMENT, GPIO SECTION
+//                               FUNCTION gpio_install_isr_service()
+//      
 //        THIS LIBRARY DOES NOT SUPPORT RTC GPIO
 //
 // APRIL 19, 2018
@@ -37,9 +44,19 @@ typedef enum
 
 typedef enum
 {
-    GPIO_PULLUP= 0,
+    GPIO_PULLUP = 0,
     GPIO_PULLDOWN
 }esp32_gpio_pull_updown_type_t;
+
+typedef enum
+{
+    GPIO_INT_DISABLE = 0,
+    GPIO_INT_RISING,
+    GPIO_INT_FALLING,
+    GPIO_INT_BOTH,
+    GPIO_INT_LEVEL_LOW,
+    GPIO_INT_LEVEL_HIGHT
+}esp32_gpio_interrupt_type_t;
 
 esp_err_t ESP32_GPIO_SetDirection(uint8_t gpio_num, esp32_gpio_pin_direction_t direction);
 esp_err_t ESP32_GPIO_SetValue(uint8_t gpio_num, uint8_t val);
@@ -47,5 +64,11 @@ esp_err_t ESP32_GPIO_GetValue(uint8_t gpio_num, uint8_t* retval);
 
 esp_err_t ESP32_GPIO_SetPullUpDown(uint8_t gpio_num, esp32_gpio_pull_updown_type_t type);
 esp_err_t ESP32_GPIO_RemovePullUpDown(uint8_t gpio_num);
+
+esp_err_t ESP32_GPIO_StartInterruptService(void);
+esp_err_t ESP32_GPIO_StopInterruptService(void);
+esp_err_t ESP32_GPIO_SetInterrupt(uint8_t gpio_num, esp32_gpio_interrupt_type_t type, gpio_isr_t handler);
+esp_err_t ESP32_GPIO_EnableInterrupt(uint8_t gpio_num);
+esp_err_t ESP32_GPIO_DisableInterrupt(uint8_t gpio_num);
 
 #endif
