@@ -62,7 +62,7 @@ esp_err_t ESP32_GPIO_SetDirection(uint8_t gpio_num, esp32_gpio_pin_direction_t d
 
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Direction = %u", gpio_num, direction);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Direction = %u\n", gpio_num, direction);
 	}
 	return ESP_OK;
 }
@@ -92,7 +92,7 @@ esp_err_t ESP32_GPIO_SetValue(uint8_t gpio_num, uint8_t val)
 	
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Set = %u", gpio_num, val);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Value Set = %u\n", gpio_num, val);
 	}
 	return ESP_OK;
 }
@@ -113,7 +113,7 @@ esp_err_t ESP32_GPIO_GetValue(uint8_t gpio_num, uint8_t* retval)
 	
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Value Get = %u", gpio_num, *retval);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Value Get = %u\n", gpio_num, *retval);
 	}
 	return ESP_OK;
 }
@@ -141,7 +141,7 @@ esp_err_t ESP32_GPIO_Toggle(uint8_t gpio_num)
 
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Toggle. New val = %u", gpio_num, val);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Toggle. New val = %u\n", gpio_num, val);
 	}
 	return ESP_OK;
 }
@@ -172,7 +172,7 @@ esp_err_t ESP32_GPIO_SetPullUpDown(uint8_t gpio_num, esp32_gpio_pull_updown_type
 
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Pullup / pulldown set (%u)", gpio_num, type);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Pullup / pulldown set (%u)\n", gpio_num, type);
 	}
 	return ESP_OK;
 }
@@ -203,7 +203,7 @@ esp_err_t ESP32_GPIO_RemovePullUpDown(uint8_t gpio_num)
 
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Removed pullup / pulldown", gpio_num);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Removed pullup / pulldown\n", gpio_num);
 	}
 	return ESP_OK;
 }
@@ -240,7 +240,7 @@ esp_err_t ESP32_GPIO_SetInterrupt(uint8_t gpio_num, esp32_gpio_interrupt_type_t 
 	
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt type = %u Set", gpio_num, type);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Interrupt type = %u Set\n", gpio_num, type);
 	}
 	return ESP_OK;
 }
@@ -259,7 +259,7 @@ esp_err_t ESP32_GPIO_EnableInterrupt(uint8_t gpio_num)
 	
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Enabled", gpio_num);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Interrupt Enabled\n", gpio_num);
 	}
 	return ESP_OK;
 }
@@ -281,7 +281,7 @@ esp_err_t ESP32_GPIO_DisableInterrupt(uint8_t gpio_num)
 	
 	if(s_debug)
 	{
-		ESP_LOGI(ESP32_GPIO_TAG, "GPIO = %u Interrupt Disabled + handler Removed", gpio_num);
+		ets_printf(ESP32_GPIO_TAG" : GPIO = %u Interrupt Disabled + handler Removed\n", gpio_num);
 	}
 	return ESP_OK;
 }
